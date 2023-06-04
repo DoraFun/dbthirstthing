@@ -1,0 +1,51 @@
+﻿@model IEnumerable<dbthirstthing.Models.PreregistrationModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Список ожидания</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+           Отображаемое имя
+        </th>
+        <th>
+            Логин
+        </th>
+
+        <th>
+            Почта
+        </th>
+        <th>
+            О пользователе
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.displayname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.login)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.aboutuser)
+        </td>
+        <td>
+            @Html.ActionLink("Подтвердить", "Edit", new { id = item.userid }) | @*тут надо переделать чтоб данные приходили в другую таблицу*@
+            @Html.ActionLink("Details", "Details", new { id = item.userid }) | @*а это нахуй не надо наверн*@
+            @Html.ActionLink("Отказать", "Delete", new { id = item.userid })
+        </td>
+    </tr>
+}
+
+</table>

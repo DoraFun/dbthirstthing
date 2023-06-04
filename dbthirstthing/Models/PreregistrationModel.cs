@@ -16,7 +16,7 @@ namespace dbthirstthing.Models
         public string displayname { get; set; }
 
         public string login { get; set; }
-        public string pass { get; set; }
         public string email { get; set; }
+        public string aboutuser { get; set; }
     }
 }

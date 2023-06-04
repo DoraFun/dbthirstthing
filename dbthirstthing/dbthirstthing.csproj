@@ -163,6 +163,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PreregistrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -228,6 +229,12 @@
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Preregistration\Create.cshtml" />
+    <Content Include="Views\Preregistration\Delete.cshtml" />
+    <Content Include="Views\Preregistration\Details.cshtml" />
+    <Content Include="Views\Preregistration\Edit.cshtml" />
+    <Content Include="Views\Preregistration\Index.cshtml" />
+    <Content Include="Views\Preregistration\PreRegistrationConfirmed.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
