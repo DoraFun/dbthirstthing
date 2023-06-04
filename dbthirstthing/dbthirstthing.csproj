@@ -162,6 +162,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PreregistrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -233,8 +234,9 @@
     <Content Include="Views\Preregistration\Delete.cshtml" />
     <Content Include="Views\Preregistration\Details.cshtml" />
     <Content Include="Views\Preregistration\Edit.cshtml" />
-    <Content Include="Views\Preregistration\Index.cshtml" />
+    <Content Include="Views\Admin\Waitlist.cshtml" />
     <Content Include="Views\Preregistration\PreRegistrationConfirmed.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
