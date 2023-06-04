@@ -15,5 +15,6 @@ namespace dbthirstthing.DataContext
         }
 
         public virtual DbSet<UserModel> Users { get; set; }
+        public virtual DbSet<PreregistrationModel> Preregistration { get; set; }
     }
 }
