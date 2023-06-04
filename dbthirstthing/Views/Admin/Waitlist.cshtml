@@ -41,7 +41,7 @@
             @Html.DisplayFor(modelItem => item.aboutuser)
         </td>
         <td>
-            @Html.ActionLink("Подтвердить", "Edit", new { id = item.userid }) | @*тут надо переделать чтоб данные приходили в другую таблицу*@
+            @Html.ActionLink("Подтвердить", "Confirm", new { id = item.userid }) | @*тут надо переделать чтоб данные приходили в другую таблицу*@
             @Html.ActionLink("Details", "Details", new { id = item.userid }) | @*а это нахуй не надо наверн*@
             @Html.ActionLink("Отказать", "Delete", new { id = item.userid })
         </td>
