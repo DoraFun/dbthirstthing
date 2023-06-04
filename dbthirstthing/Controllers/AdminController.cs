@@ -1,5 +1,6 @@
 ﻿using dbthirstthing.DataContext;
 using dbthirstthing.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,6 +50,7 @@ namespace dbthirstthing.Controllers
 
         public ActionResult Confirm(int? id)
         {
+            var randompassword = Crypto.GenerateSalt(8);
             using (db)
             {
                 var usersToMove = db.Preregistration.Where(u => u.userid == id).ToList();
@@ -57,29 +59,38 @@ namespace dbthirstthing.Controllers
                 {
                     var newUser = new UserModel
                     {
-                        userid = user.userid,
+                        //userid = user.userid,
                         displayname = user.displayname,
                         login = user.login,
                         email = user.email,
-                        onetimepassword = Crypto.GenerateSalt(8)
-                    };
+                        onetimepassword = HashPassword(randompassword) /*интернет мужики говорят что норм тема*/
+                };
 
                     string filePath = Server.MapPath($"~/messages/{newUser.login}_confirmation.txt");
 
                     using (StreamWriter writer = new StreamWriter(filePath))
                     {
-                        writer.WriteLine($"Ваш одноразовый пароль для первого входа: {newUser.onetimepassword}");
+                        writer.WriteLine($"Ваш одноразовый пароль для первого входа: {randompassword} обязательно смените его после авторизации");
                     }
-
+                    
                     db.Users.Add(newUser);
                     db.Preregistration.Remove(user);
                 }
-
+                
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
+
             }
+
         }
+
+        public static string HashPassword(string password)
+        {
+            var hasher = new PasswordHasher();
+            return hasher.HashPassword(password);
+        }
+
     }
 
 
