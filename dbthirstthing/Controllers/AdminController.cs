@@ -27,7 +27,7 @@ namespace dbthirstthing.Controllers
 
         [HttpPost, ActionName("Confirm")]
         [ValidateAntiForgeryToken]
-        public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email,onetimepassword")] UserModel userModel)
+        public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email")] UserModel userModel)
         {
             
                 try
@@ -47,7 +47,7 @@ namespace dbthirstthing.Controllers
 
             
         }
-
+        //БРАТАН ПОЧЕМУ У ТЕБЯ 2 МЕТОДА
         public ActionResult Confirm(int? id)
         {
             var randompassword = Crypto.GenerateSalt(8);
@@ -63,7 +63,7 @@ namespace dbthirstthing.Controllers
                         displayname = user.displayname,
                         login = user.login,
                         email = user.email,
-                        onetimepassword = HashPassword(randompassword) /*интернет мужики говорят что норм тема*/
+                        pass = HashPassword(randompassword) /*интернет мужики говорят что норм тема*/
                 };
 
                     string filePath = Server.MapPath($"~/messages/{newUser.login}_confirmation.txt");

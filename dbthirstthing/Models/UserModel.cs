@@ -19,7 +19,7 @@ namespace dbthirstthing.Models
         public string pass { get; set; }
         public string email { get; set; }
 
-        public string onetimepassword { get; set; }
+        //public string onetimepassword { get; set; }
         public bool neverlogged { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -26,10 +27,10 @@ namespace dbthirstthing.Controllers
                 UserModel user = null;
                 using (ApplicationDbContext db = new ApplicationDbContext())
                 {
-                    user = db.Users.FirstOrDefault(u => u.login == model.Name && (u.pass == model.Password || u.pass == model.onetimepassword));
-                    //С одной стороны, если одноразовый пароль совпадает с обычным, это пизда, с другой, мы его все равно сбрасываем, но лучше потом чекнуть варианты получше
+                    user = db.Users.FirstOrDefault(u => u.login == model.Name);
+                    //ААААААААААААААААААААААААААААААА
 
-                    if (user != null)
+                    if (user != null && Crypto.VerifyHashedPassword(user.pass, model.Password) == true) /*пиздец костыль*/
                     {
                         FormsAuthentication.SetAuthCookie(model.Name, true);
 

@@ -15,7 +15,5 @@ namespace dbthirstthing.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        public string onetimepassword { get; set; }
     }
 }
