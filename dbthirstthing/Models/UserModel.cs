@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace dbthirstthing.Models
 {
@@ -17,6 +18,8 @@ namespace dbthirstthing.Models
 
         public string login { get; set; }
         public string pass { get; set; }
+
+        
         public string email { get; set; }
 
         //public string onetimepassword { get; set; }

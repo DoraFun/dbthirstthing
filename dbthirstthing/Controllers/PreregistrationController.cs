@@ -4,10 +4,14 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using dbthirstthing.DataContext;
 using dbthirstthing.Models;
+using Microsoft.Ajax.Utilities;
 
 namespace dbthirstthing.Controllers
 {
@@ -124,5 +128,55 @@ namespace dbthirstthing.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult IsEmailValid(string email)
+        {
+            bool isExistPreregistration = false;
+            bool isExistUser = false;
+
+            using (var db = new ApplicationDbContext())
+            {
+                isExistPreregistration = db.Preregistration.Any(u => u.email == email);
+                isExistUser = db.Users.Any(u => u.email == email);
+
+
+            }
+
+            if (!isExistUser && !isExistPreregistration)
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost, ActionName("IsLoginValid")]
+        public ActionResult IsLoginValid(string login)
+        {
+            bool isExistPreregistration = false;
+            bool isExistUser = false;
+
+            using (var db = new ApplicationDbContext())
+            {
+                //мб сделать их ассинхронными ? Надо почитать про это
+                isExistPreregistration = db.Preregistration.Any(u => u.login == login);
+                isExistUser = db.Users.Any(u => u.login == login);
+
+            }
+
+            if (!isExistUser && !isExistPreregistration)
+            {
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
+        }
     }
+
+    
 }
