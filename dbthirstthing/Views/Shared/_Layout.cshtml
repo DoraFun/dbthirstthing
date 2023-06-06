@@ -30,18 +30,18 @@
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-           @{ 
-               if (User.Identity.IsAuthenticated)
-               {
-                       <p>Ваш логин: @User.Identity.Name</p> 
-                       <a href="/Password/ChangePassword">Сменить пароль</a>
-                       <a href="/Authentication/Logoff">Выйти</a>
-               }
-               else
-            {
-                <p>Вы не вошли в аккаунт</p>
+            @{
+                if (User.Identity.IsAuthenticated)
+                {
+                    <p>Ваш логин: @User.Identity.Name</p>
+                    <a href="/Password/ChangePassword">Сменить пароль</a>
+                    <a href="/Authentication/Logoff">Выйти</a>
+                }
+                else
+                {
+                    <p>Вы не вошли в аккаунт</p>
+                }
             }
-           }
         </footer>
     </div>
 
