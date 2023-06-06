@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using dbthirstthing.DataContext;
 using dbthirstthing.Models;
+using hbehr.recaptcha;
 using Microsoft.Ajax.Utilities;
 
 namespace dbthirstthing.Controllers
@@ -55,9 +56,20 @@ namespace dbthirstthing.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Preregistration.Add(preregistrationModel);
-                db.SaveChanges();
-                return View("./PreRegistrationConfirmed");
+                string userResponse = HttpContext.Request.Params["g-recaptcha-response"];
+                if (!string.IsNullOrEmpty(userResponse) && ReCaptcha.ValidateCaptcha(userResponse)) /*каптча*/
+                {
+                    db.Preregistration.Add(preregistrationModel);
+                    db.SaveChanges();
+                    return View("./PreRegistrationConfirmed");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Подтвердите, что вы не робот для продолжения");
+                    // Bot Attack, non validated !
+
+
+                }
             }
 
             return View(preregistrationModel);

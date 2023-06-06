@@ -1,4 +1,5 @@
-﻿using System;
+﻿using hbehr.recaptcha;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,6 +18,14 @@ namespace dbthirstthing
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            //ReCaptcha init
+            string publicKey = "6Ld1B3UmAAAAANEOmK1ePUBzhmEM6ovwThPAVXqu";
+            string secretKey = "6Ld1B3UmAAAAAOrJiYXFKZA9mLbhw0StDpt1AiZR";
+
+            // Optional, select a default language:
+            ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.Russian;
+            ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
         }
     }
 }

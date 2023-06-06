@@ -1,5 +1,7 @@
 ﻿@model dbthirstthing.Models.LoginModel
 
+@using hbehr.recaptcha
+
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -15,33 +17,37 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true)
+<div class="form-horizontal">
+    @Html.ValidationSummary(true)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name)
-                @Html.ValidationMessageFor(model => model.Name)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Password)
-                @Html.ValidationMessageFor(model => model.Password)
-            </div>
-        </div>
-
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Войти" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Password)
+            @Html.ValidationMessageFor(model => model.Password)
+        </div>
+    </div>
+    @Html.ValidationMessage("ReCaptcha")
+    @ReCaptcha.GetCaptcha()
+    <!-- Will show your captcha as your configured Language,
+    if no language is defined it will show ReCaptcha default language (English) -->
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Войти" class="btn btn-default" />
+        </div>
+    </div>
+    <a href="/Password/ChangePassword">Забыли пароль ?</a>
+</div>
 }
 
 @section Scripts {
