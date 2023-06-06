@@ -189,12 +189,14 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PasswordController.cs" />
     <Compile Include="Controllers\PreregistrationController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChangePasswordModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\PreregistrationModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -265,6 +267,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Authentication\Login.cshtml" />
     <Content Include="Views\Authentication\FirstAuth.cshtml" />
+    <Content Include="Views\Password\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

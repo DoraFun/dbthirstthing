@@ -42,7 +42,7 @@ namespace dbthirstthing.Controllers
                         {
                             //user.onetimepassword = null;
                             //db.SaveChanges(); /*Выглядит как такое себе решение*/
-                            ModelState.AddModelError("", "Чел не входил");
+                            return RedirectToAction("ChangePassword", "Password"); /*надо бы добавить страничку ддля объяснения, зачем его менять*/
                         }
 
 
