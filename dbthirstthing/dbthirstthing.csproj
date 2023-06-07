@@ -194,7 +194,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordController.cs" />
     <Compile Include="Controllers\PreregistrationController.cs" />
-    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataContext\ApplicationDbContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -259,13 +258,10 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\User\Create.cshtml" />
-    <Content Include="Views\User\Delete.cshtml" />
-    <Content Include="Views\User\Details.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
-    <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\Preregistration\Create.cshtml" />
-    <Content Include="Views\Preregistration\Delete.cshtml" />
+    <Content Include="Views\Preregistration\Delete.cshtml">
+      <BrowseToURL>~/Preregistration/Delete</BrowseToURL>
+    </Content>
     <Content Include="Views\Preregistration\Details.cshtml" />
     <Content Include="Views\Preregistration\Edit.cshtml" />
     <Content Include="Views\Admin\Waitlist.cshtml" />
@@ -274,6 +270,7 @@
     <Content Include="Views\Authentication\Login.cshtml" />
     <Content Include="Views\Authentication\FirstAuth.cshtml" />
     <Content Include="Views\Password\ChangePassword.cshtml" />
+    <Content Include="Views\Admin\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -26,20 +26,6 @@ namespace dbthirstthing.Controllers
             return View(db.Preregistration.ToList());
         }
 
-        // GET: PreregistrationModels1/Details/5
-        //public ActionResult Details(int? id) 
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-        //    if (preregistrationModel == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(preregistrationModel);
-        //}
 
         // GET: PreregistrationModels1/Create
         public ActionResult Create()
@@ -75,62 +61,7 @@ namespace dbthirstthing.Controllers
             return View(preregistrationModel);
         }
 
-        // GET: PreregistrationModels1/Edit/5
-        //public ActionResult Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-        //    if (preregistrationModel == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-        //    return View(preregistrationModel);
-        //}
 
-        //// POST: PreregistrationModels1/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "userid,displayname,login,email,aboutuser")] PreregistrationModel preregistrationModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(preregistrationModel).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(preregistrationModel);
-        //}
-
-        // GET: PreregistrationModels1/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-            if (preregistrationModel == null)
-            {
-                return HttpNotFound();
-            }
-            return View(preregistrationModel);
-        }
-
-        // POST: PreregistrationModels1/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-            db.Preregistration.Remove(preregistrationModel);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {

@@ -1,14 +1,14 @@
-﻿@model dbthirstthing.Models.UserModel
+﻿@model dbthirstthing.Models.PreregistrationModel
 
 @{
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+<h2>Deny</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>UserModel</h4>
+    <h4>PreregistrationModel</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -28,19 +28,19 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.pass)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.pass)
-        </dd>
-
-        <dt>
             @Html.DisplayNameFor(model => model.email)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.aboutuser)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.aboutuser)
         </dd>
 
     </dl>

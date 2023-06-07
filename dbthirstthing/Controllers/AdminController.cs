@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -25,10 +26,27 @@ namespace dbthirstthing.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("Deny")]
-        [ValidateAntiForgeryToken]
-        public ActionResult Deny(int? id)
+        public ActionResult Delete(int? id)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
+            
+            if (preregistrationModel == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(preregistrationModel);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int? id)
+        {
+
             try
             {
                 PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
@@ -40,6 +58,7 @@ namespace dbthirstthing.Controllers
             {
                 return View(ex);
             }
+
         }
 
         [HttpPost, ActionName("Confirm")]
