@@ -10,19 +10,15 @@ namespace dbthirstthing.Models
     [Table("roles", Schema = "public")]
     public class RoleModel
     {
+        [Key]
         public int roleid { get; set; }
 
         [Required]
         public string rolename { get; set; }
 
-        public virtual ICollection<RightModel> rights { get; set; }
-        public virtual ICollection<UserModel> users { get; set; }
+        public ICollection<RightModel> rights { get; set; }
 
-        public RoleModel()
-        {
-            rights = new List<RightModel>();
-            users = new List<UserModel>();
-        }
+
 
     }
 }

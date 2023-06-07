@@ -25,6 +25,23 @@ namespace dbthirstthing.Controllers
             return View();
         }
 
+        [HttpPost, ActionName("Deny")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Deny(int? id)
+        {
+            try
+            {
+                PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
+                db.Preregistration.Remove(preregistrationModel);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(ex);
+            }
+        }
+
         [HttpPost, ActionName("Confirm")]
         [ValidateAntiForgeryToken]
         public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email")] UserModel userModel)
@@ -90,6 +107,8 @@ namespace dbthirstthing.Controllers
             var hasher = new PasswordHasher();
             return hasher.HashPassword(password);
         }
+
+
 
     }
 

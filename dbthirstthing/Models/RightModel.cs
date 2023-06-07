@@ -7,19 +7,17 @@ using System.Web;
 
 namespace dbthirstthing.Models
 {
-    [Table("roles", Schema = "public")]
+    [Table("rights", Schema = "public")]
     public class RightModel
     {
+        [Key]
         public int rightid { get; set; }
 
         [Required]
         public string rightname { get; set; }
 
-        public virtual ICollection<RoleModel> roles { get; set; }
+        public ICollection<RoleModel> roles { get; set; }
 
-        public RightModel()
-        {
-            roles = new List<RoleModel>();
-        }
+
     }
 }

@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
+
 namespace dbthirstthing.DataContext
 {
     public class ApplicationDbContext :DbContext
@@ -20,19 +21,19 @@ namespace dbthirstthing.DataContext
         public virtual DbSet<RightModel> Rights { get; set; }
         public virtual DbSet<RoleModel> Roles { get; set; }
 
+        public virtual DbSet<RoleRightsModel> RoleRights { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RoleModel>().HasMany(c => c.rights)
-                .WithMany(s => s.roles)
-                .Map(t => t.MapLeftKey("roleid")
-                .MapRightKey("rightid")
-                .ToTable("rolerights"));
-
-            modelBuilder.Entity<RoleModel>().HasMany(c => c.users)
-            .WithMany(s => s.roles)
-            .Map(t => t.MapLeftKey("roleid")
-            .MapRightKey("userid")
-            .ToTable("userroles"));
+            modelBuilder.Entity<RoleModel>()
+                .HasMany(r => r.rights)
+                .WithMany(r => r.roles)
+                .Map(m =>
+                {
+                    m.ToTable("rolerights");
+                    m.MapLeftKey("roleid");
+                    m.MapRightKey("rightid");
+                });
         }
     }
 }
