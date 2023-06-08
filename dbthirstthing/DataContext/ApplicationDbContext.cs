@@ -34,6 +34,8 @@ namespace dbthirstthing.DataContext
                     m.MapLeftKey("roleid");
                     m.MapRightKey("rightid");
                 });
+
+
         }
     }
 }

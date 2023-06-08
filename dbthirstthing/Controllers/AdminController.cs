@@ -20,6 +20,10 @@ namespace dbthirstthing.Controllers
         {
             return View(db.Preregistration.ToList());
         }
+        public ActionResult AllUsers()
+        {
+            return View(db.Users.Include("RoleModel").ToList());
+        }
 
         public ActionResult Index()
         {

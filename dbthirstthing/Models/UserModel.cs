@@ -25,11 +25,7 @@ namespace dbthirstthing.Models
         //public string onetimepassword { get; set; }
         public bool neverlogged { get; set; }
 
-        public virtual ICollection<RoleModel> roles { get; set; }
-
-        public UserModel()
-        {
-            roles = new List<RoleModel>();
-        }
+        public int? roleid { get; set; }
+        public RoleModel RoleModel { get; set; }
     }
 }

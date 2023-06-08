@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Index";
+
+
 }
 
 <h2>Список ожидания</h2>
@@ -10,7 +12,7 @@
 <table class="table">
     <tr>
         <th>
-           Отображаемое имя
+            Отображаемое имя
         </th>
         <th>
             Логин
@@ -25,27 +27,28 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.displayname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.login)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.displayname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.login)
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.aboutuser)
-        </td>
-        <td>
-            @Html.ActionLink("Подтвердить", "Confirm", new { id = item.userid }) |
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.aboutuser)
+            </td>
+            <td>
+                @Html.ActionLink("Подтвердить", "Confirm", new { id = item.userid }) |
 
-            @Html.ActionLink("Отказать", "Delete", new { id = item.userid })
-        </td>
-    </tr>
-}
+                @Html.ActionLink("Отказать", "Delete", new { id = item.userid })
+            </td>
+        </tr>
+    }
 
 </table>
