@@ -19,11 +19,11 @@ namespace dbthirstthing.Models
 
         public ICollection<RightModel> rights { get; set; }
 
-        public ICollection<UserModel> Users { get; set; }
-        public RoleModel()
-        {
-            Users = new List<UserModel>();
-        }
+        //public ICollection<UserModel> Users { get; set; }
+        //public RoleModel()
+        //{
+        //    Users = new List<UserModel>();
+        //}
 
 
 
