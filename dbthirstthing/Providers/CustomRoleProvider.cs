@@ -17,7 +17,7 @@ namespace dbthirstthing.Providers
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 // Получаем пользователя
-                UserModel user = db.Users.Include("RoleModel").FirstOrDefault(u => u.email == username);
+                UserModel user = db.Users.Include("RoleModel").FirstOrDefault(u => u.login == username);
                 if (user != null && user.RoleModel != null)
                 {
                     // получаем роль
@@ -36,7 +36,7 @@ namespace dbthirstthing.Providers
             using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 // Получаем пользователя
-                UserModel user = db.Users.Include("RoleModel").FirstOrDefault(u => u.email == username);
+                UserModel user = db.Users.Include("RoleModel").FirstOrDefault(u => u.login == username);
 
                 if (user != null && user.RoleModel != null && user.RoleModel.rolename == roleName)
                     return true;

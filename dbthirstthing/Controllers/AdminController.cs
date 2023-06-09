@@ -16,20 +16,28 @@ namespace dbthirstthing.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Admin
+
+        [Authorize(Roles = "Admin")]
         public ActionResult Waitlist()
         {
+            List<RoleModel> roles = db.Roles.ToList();
+            ViewBag.Roles = roles;
             return View(db.Preregistration.ToList());
         }
+
+        [Authorize(Roles = "Admin")]
         public ActionResult AllUsers()
         {
             return View(db.Users.Include("RoleModel").ToList());
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -46,6 +54,7 @@ namespace dbthirstthing.Controllers
             return View(preregistrationModel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int? id)
@@ -65,15 +74,17 @@ namespace dbthirstthing.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Confirm")]
         [ValidateAntiForgeryToken]
-        public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email")] UserModel userModel)
+        public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email, roleid")] UserModel userModel)
         {
-            
+          
                 try
                 {
                     db.Users.Add(userModel);
-                    PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
+                   
+                PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
                     db.Preregistration.Remove(preregistrationModel);
                     db.SaveChanges();
                     return RedirectToAction("Index");
@@ -88,8 +99,10 @@ namespace dbthirstthing.Controllers
             
         }
         //БРАТАН ПОЧЕМУ У ТЕБЯ 2 МЕТОДА
+        [Authorize(Roles = "Admin")]
         public ActionResult Confirm(int? id)
         {
+
             var randompassword = Crypto.GenerateSalt(8);
             using (db)
             {
@@ -103,7 +116,12 @@ namespace dbthirstthing.Controllers
                         displayname = user.displayname,
                         login = user.login,
                         email = user.email,
-                        pass = HashPassword(randompassword) /*интернет мужики говорят что норм тема*/
+                        pass = HashPassword(randompassword), /*интернет мужики говорят что норм тема*/
+                        neverlogged = true,
+
+                        
+
+
                 };
 
                     string filePath = Server.MapPath($"~/messages/{newUser.login}_confirmation.txt");
@@ -125,6 +143,7 @@ namespace dbthirstthing.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         public static string HashPassword(string password)
         {
             var hasher = new PasswordHasher();
