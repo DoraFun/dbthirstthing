@@ -5,14 +5,16 @@
 }
 <table class="table">
     <tr>
-        <td>Модель</td>
-        <td>Производитель</td>
+        <td>Название</td>
+        <td>Текст</td>
+        <td>Дата</td>
     </tr>
     @foreach (var item in Model.News)
     {
         <tr>
             <td>@item.header</td>
             <td>@item.content</td>
+            <td>@item.newsdate</td>
         </tr>
     }
 </table>
