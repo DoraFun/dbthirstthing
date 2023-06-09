@@ -207,6 +207,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Helpers\PagingHelpers.cs" />
     <Compile Include="Models\GoogleAccessToken.cs" />
     <Compile Include="Models\GoogleUserOutputData.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -218,7 +220,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ChangePasswordModel.cs" />
+    <Compile Include="Models\IndexViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\NewsModel.cs" />
+    <Compile Include="Models\NewsViewModel.cs" />
     <Compile Include="Models\PreregistrationModel.cs" />
     <Compile Include="Models\RightModel.cs" />
     <Compile Include="Models\RoleModel.cs" />
@@ -292,6 +297,7 @@
     <Content Include="Views\Password\ChangePassword.cshtml" />
     <Content Include="Views\Admin\Delete.cshtml" />
     <Content Include="Views\Admin\AllUsers.cshtml" />
+    <Content Include="Views\News\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

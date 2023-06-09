@@ -22,6 +22,7 @@ namespace dbthirstthing.DataContext
         public virtual DbSet<RoleModel> Roles { get; set; }
 
         public virtual DbSet<RoleRightsModel> RoleRights { get; set; }
+        public virtual DbSet<NewsModel> News { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
