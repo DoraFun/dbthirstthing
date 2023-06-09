@@ -31,108 +31,85 @@ namespace dbthirstthing.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
         public ActionResult Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (Session["Name"] != null && Session["IsValidTwoFactorAuthentication"] != null && (bool)Session["IsValidTwoFactorAuthentication"])
+                return RedirectToAction("Index");
+
+            string googleAuthKey = WebConfigurationManager.AppSettings["GoogleAuthKey"];
+            string userUniqueKey = (model.Name + googleAuthKey);
+
+            string userResponse = HttpContext.Request.Params["g-recaptcha-response"];
+            if (string.IsNullOrEmpty(userResponse) || !ReCaptcha.ValidateCaptcha(userResponse))
             {
-                bool status = false;
-
-                if (Session["Name"] == null || Session["IsValidTwoFactorAuthentication"] == null || !(bool)Session["IsValidTwoFactorAuthentication"])
-                {
-                    string googleAuthKey = WebConfigurationManager.AppSettings["GoogleAuthKey"];
-                    string UserUniqueKey = (model.Name + googleAuthKey);
-
-                    string userResponse = HttpContext.Request.Params["g-recaptcha-response"];
-                    if (!string.IsNullOrEmpty(userResponse) && ReCaptcha.ValidateCaptcha(userResponse)) /*каптча*/
-                    {
-                        UserModel user = null;
-                        using (ApplicationDbContext db = new ApplicationDbContext())
-                        {
-                            user = db.Users.FirstOrDefault(u => u.login == model.Name);
-                            //ААААААААААААААААААААААААААААААА
-
-                            if (user != null && Crypto.VerifyHashedPassword(user.pass, model.Password) == true) /*пиздец костыль*/
-                            {
-                                Session["Name"] = model.Name;
-                                
-
-                                TwoFactorAuthenticator TwoFacAuth = new TwoFactorAuthenticator();
-                                var setupInfo = TwoFacAuth.GenerateSetupCode("UdayDodiyaAuthDemo.com", model.Name, ConvertSecretToBytes(UserUniqueKey, false), 300);
-                                Session["UserUniqueKey"] = UserUniqueKey;
-                                ViewBag.BarcodeImageUrl = setupInfo.QrCodeSetupImageUrl;
-                                ViewBag.SetupCode = setupInfo.ManualEntryKey;
-                                status = true;
-
-                                //if (user.neverlogged != true)
-                                //{
-                                //    return RedirectToAction("Index", "Home");
-                                //}
-                                //else
-                                //{
-                                //    //user.onetimepassword = null;
-                                //    //db.SaveChanges(); /*Выглядит как такое себе решение*/
-                                //    return RedirectToAction("ChangePassword", "Password"); /*надо бы добавить страничку ддля объяснения, зачем его менять*/
-                                //}
-
-
-
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Подтвердите, что вы не робот для продолжения");
-                        // Bot Attack, non validated !
-
-
-                    }
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
-                ViewBag.Status = status;
-
+                ModelState.AddModelError("", "Подтвердите, что вы не робот для продолжения");
+                return View(model);
             }
 
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.SingleOrDefault(u => u.login == model.Name);
+
+                if (user == null || !Crypto.VerifyHashedPassword(user.pass, model.Password))
+                {
+                    ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
+                    return View(model);
+                }
+
+                Session["Name"] = model.Name;
+
+                var twoFacAuth = new TwoFactorAuthenticator();
+                var setupInfo = twoFacAuth.GenerateSetupCode("UdayDodiyaAuthDemo.com", model.Name, ConvertSecretToBytes(userUniqueKey, false), 300);
+                Session["UserUniqueKey"] = userUniqueKey;
+                ViewBag.BarcodeImageUrl = setupInfo.QrCodeSetupImageUrl;
+                ViewBag.SetupCode = setupInfo.ManualEntryKey;
+            }
+
+            ViewBag.Status = true;
             return View(model);
         }
 
-        
+        public ActionResult TwoFactorAuthenticate(LoginModel model)
+        {
+            var token = Request["CodeDigit"];
+            var twoFacAuth = new TwoFactorAuthenticator();
+            var userUniqueKey = Session["UserUniqueKey"].ToString();
+            bool isValid = twoFacAuth.ValidateTwoFactorPIN(userUniqueKey, token, false);
+
+            if (!isValid)
+            {
+                ViewBag.Message = "Google Two Factor PIN is expired or wrong";
+                return RedirectToAction("Login");
+            }
+
+            var userCode = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(userUniqueKey)));
+
+            Session["IsValidTwoFactorAuthentication"] = true;
+            using (var db = new ApplicationDbContext())
+            {
+                string uname = (string)Session["Name"];
+                var user = db.Users.SingleOrDefault(u => u.login == uname);
+                FormsAuthentication.SetAuthCookie(user.login, true);
+
+                if (user.neverlogged != true)
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("ChangePassword", "Password"); // Add explanation page for why the password should be changed
+            }
+        }
+
+        private byte[] ConvertSecretToBytes(string secret, bool secretIsBase32) =>
+            secretIsBase32 ? Base32Encoding.ToBytes(secret) : Encoding.UTF8.GetBytes(secret);
+
         public ActionResult Logoff()
         {
             Session["Name"] = null;
             Session["IsValidTwoFactorAuthentication"] = null;
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
-        }
-
-        private static byte[] ConvertSecretToBytes(string secret, bool secretIsBase32) =>
-           secretIsBase32 ? Base32Encoding.ToBytes(secret) : Encoding.UTF8.GetBytes(secret);
-
-        public ActionResult TwoFactorAuthenticate(LoginModel model)
-        {
-            var token = Request["CodeDigit"];
-            TwoFactorAuthenticator TwoFacAuth = new TwoFactorAuthenticator();
-            string UserUniqueKey = Session["UserUniqueKey"].ToString();
-            bool isValid = TwoFacAuth.ValidateTwoFactorPIN(UserUniqueKey, token, false);
-            if (isValid)
-            {
-                HttpCookie TwoFCookie = new HttpCookie("TwoFCookie");
-                string UserCode = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(UserUniqueKey)));
-;
-                Session["IsValidTwoFactorAuthentication"] = true;
-                FormsAuthentication.SetAuthCookie((string)Session["Name"], true);
-                return RedirectToAction("Index", "Home");
-            }
-
-            ViewBag.Message = "Google Two Factor PIN is expired or wrong";
-            return RedirectToAction("Login");
         }
     }
 }
