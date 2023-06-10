@@ -1,5 +1,8 @@
-﻿using hbehr.recaptcha;
+﻿using dbthirstthing.Jobs;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using hbehr.recaptcha;
 using NLog;
+using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +34,9 @@ namespace dbthirstthing
             //ILogger init
             ILogger logger = LogManager.GetCurrentClassLogger();
             logger.Trace("Application started");
+
+            //Background server load monitoring
+            MonitorScheduler.Start();
         }
     }
 }
