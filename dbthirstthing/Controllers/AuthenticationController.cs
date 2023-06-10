@@ -1,10 +1,12 @@
 ﻿using dbthirstthing.DataContext;
 using dbthirstthing.Models;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Google.Authenticator;
 using hbehr.recaptcha;
 using hbehr.recaptcha.Exceptions;
 using Microsoft.Ajax.Utilities;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +23,12 @@ namespace dbthirstthing.Controllers
 {
     public class AuthenticationController : Controller
     {
-
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public ActionResult Login()
         {
             Session["Name"] = null;
             Session["IsValidTwoFactorAuthentication"] = null;
+            logger.Info("Loggin page accessed. ");
             return View();
         }
 
@@ -97,6 +100,7 @@ namespace dbthirstthing.Controllers
                 if (user.neverlogged != true)
                     return RedirectToAction("Index", "Home");
 
+                logger.Info("User auth. ");
                 return RedirectToAction("ChangePassword", "Password"); // Add explanation page for why the password should be changed
             }
         }
@@ -109,6 +113,7 @@ namespace dbthirstthing.Controllers
             Session["Name"] = null;
             Session["IsValidTwoFactorAuthentication"] = null;
             FormsAuthentication.SignOut();
+            logger.Info("User left. ");
             return RedirectToAction("Index", "Home");
         }
     }

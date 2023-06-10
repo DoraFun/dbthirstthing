@@ -43,6 +43,10 @@
                     <p>Войдите через форму входа или @Html.ActionLink("Login Using Google", "Index", "OAuth")</p>
                 }
             }
+            @if (User.IsInRole("Admin"))
+            {
+                @Html.ActionLink("HealthCheck", "Index", "HealthCheck")
+            }
         </footer>
     </div>
 

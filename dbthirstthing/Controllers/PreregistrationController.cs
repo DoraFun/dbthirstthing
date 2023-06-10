@@ -13,16 +13,20 @@ using dbthirstthing.DataContext;
 using dbthirstthing.Models;
 using hbehr.recaptcha;
 using Microsoft.Ajax.Utilities;
+using NLog;
 
 namespace dbthirstthing.Controllers
 {
     public class PreregistrationController : Controller
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: PreregistrationModels1
         public ActionResult Index()
         {
+            logger.Info("preregistrations list accessed. ");
             return View(db.Preregistration.ToList());
         }
 
@@ -30,6 +34,7 @@ namespace dbthirstthing.Controllers
         // GET: PreregistrationModels1/Create
         public ActionResult Create()
         {
+            logger.Info("preregistration page accessed. ");
             return View();
         }
 
@@ -47,10 +52,12 @@ namespace dbthirstthing.Controllers
                 {
                     db.Preregistration.Add(preregistrationModel);
                     db.SaveChanges();
+                    logger.Info("New preregistration added. ");
                     return View("./PreRegistrationConfirmed");
                 }
                 else
                 {
+                    logger.Info("Someone failed captcha. ");
                     ModelState.AddModelError("", "Подтвердите, что вы не робот для продолжения");
                     // Bot Attack, non validated !
 

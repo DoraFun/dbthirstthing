@@ -1,4 +1,5 @@
 ﻿using hbehr.recaptcha;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,10 @@ namespace dbthirstthing
             // Optional, select a default language:
             ReCaptchaLanguage defaultLanguage = ReCaptchaLanguage.Russian;
             ReCaptcha.Configure(publicKey, secretKey, defaultLanguage);
+
+            //ILogger init
+            ILogger logger = LogManager.GetCurrentClassLogger();
+            logger.Trace("Application started");
         }
     }
 }

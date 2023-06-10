@@ -1,5 +1,6 @@
 ﻿using dbthirstthing.DataContext;
 using dbthirstthing.Models;
+using NLog;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -9,8 +10,11 @@ using static dbthirstthing.Models.NewsViewModel;
 
 namespace dbthirstthing.Controllers
 {
+
     public class NewsController : Controller
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+
         private readonly ApplicationDbContext db = new ApplicationDbContext();
         private readonly int pageSize = 10; // количество объектов на страницу
 
@@ -26,6 +30,7 @@ namespace dbthirstthing.Controllers
 
             var pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = totalNewsCount };
             var ivm = new IndexViewModel { PageInfo = pageInfo, News = newsOnCurrentPage };
+            logger.Info("News accessed. ");
             return View(ivm);
         }
 

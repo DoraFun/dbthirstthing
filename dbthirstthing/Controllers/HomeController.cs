@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,13 +9,22 @@ namespace dbthirstthing.Controllers
 {
     public class HomeController : Controller
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         public ActionResult Index()
         {
+
+            
+                logger.Info("Main page accessed. ");
+            
+            
             return View();
         }
 
         public ActionResult About()
         {
+
+                logger.Info("About page accessed. ");
+            
             ViewBag.Message = "Your application description page.";
 
             return View();
@@ -22,6 +32,7 @@ namespace dbthirstthing.Controllers
 
         public ActionResult Contact()
         {
+            logger.Info("Contact page accessed. ");
             ViewBag.Message = "Your contact page.";
 
             return View();

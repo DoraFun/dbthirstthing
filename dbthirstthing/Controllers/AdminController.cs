@@ -1,6 +1,7 @@
 ﻿using dbthirstthing.DataContext;
 using dbthirstthing.Models;
 using Microsoft.AspNet.Identity;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,7 @@ namespace dbthirstthing.Controllers
 {
     public class AdminController : Controller
     {
+        private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Admin
 
@@ -50,7 +52,7 @@ namespace dbthirstthing.Controllers
             {
                 return HttpNotFound();
             }
-
+            
             return View(preregistrationModel);
         }
 
@@ -65,10 +67,12 @@ namespace dbthirstthing.Controllers
                 PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
                 db.Preregistration.Remove(preregistrationModel);
                 db.SaveChanges();
+                logger.Info($"User with id {id} was denied. ");
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
+                logger.Error($"{ex} while tried to delete user with id {id} ");
                 return View(ex);
             }
 
@@ -87,11 +91,13 @@ namespace dbthirstthing.Controllers
                 PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
                     db.Preregistration.Remove(preregistrationModel);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    logger.Info($" user with id {id} was accepted ");
+                return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    return View(ex);
+                logger.Error($"{ex} while tried to accept user with id {id} ");
+                return View(ex);
                 }
 
             
@@ -130,7 +136,7 @@ namespace dbthirstthing.Controllers
                     {
                         writer.WriteLine($"Ваш одноразовый пароль для первого входа: {randompassword} обязательно смените его после авторизации");
                     }
-                    
+                    logger.Info($" user with id {id} was accepted ");
                     db.Users.Add(newUser);
                     db.Preregistration.Remove(user);
                 }
