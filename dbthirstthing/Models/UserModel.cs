@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using dbthirstthing.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +11,7 @@ using System.Web.Mvc;
 namespace dbthirstthing.Models
 {
     [Table("users",Schema = "public")]
+
     public class UserModel
     {
         [Key]
