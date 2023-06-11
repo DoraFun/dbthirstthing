@@ -37,6 +37,10 @@ namespace dbthirstthing
 
             //Background server load monitoring
             MonitorScheduler.Start();
+
+
+            //AutoMapper config
+            AutoMapperConfig.RegisterMappings();
         }
     }
 }

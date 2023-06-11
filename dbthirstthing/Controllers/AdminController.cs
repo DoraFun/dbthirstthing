@@ -1,4 +1,6 @@
-﻿using dbthirstthing.DataContext;
+﻿using AutoMapper;
+using dbthirstthing.DataContext;
+using dbthirstthing.DTO;
 using dbthirstthing.Models;
 using Microsoft.AspNet.Identity;
 using NLog;
@@ -30,7 +32,10 @@ namespace dbthirstthing.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult AllUsers()
         {
-            return View(db.Users.Include("RoleModel").ToList());
+            var users = db.Users.Include("RoleModel").ToList();
+            var userDTOs = Mapper.Map<List<UserModel>, List<UserDTO>>(users);
+            return View(userDTOs);
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -104,7 +109,7 @@ namespace dbthirstthing.Controllers
 
             
         }
-        //БРАТАН ПОЧЕМУ У ТЕБЯ 2 МЕТОДА
+
         [Authorize(Roles = "Admin")]
         public ActionResult Confirm(int? id)
         {

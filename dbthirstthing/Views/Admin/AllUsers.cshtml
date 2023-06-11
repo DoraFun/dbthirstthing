@@ -1,4 +1,4 @@
-﻿@model IEnumerable<dbthirstthing.Models.UserModel>
+﻿@model IEnumerable<dbthirstthing.DTO.UserDTO>
 
 @{
     ViewBag.Title = "AllUsers";
@@ -28,25 +28,26 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.displayname)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.login)
-        </td>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.displayname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.login)
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleModel.rolename)
-        </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RoleModel.rolename)
+            </td>
 
 
 
-    </tr>
-}
+        </tr>
+    }
 
 </table>
