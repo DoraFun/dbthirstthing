@@ -1,4 +1,5 @@
 ﻿using dbthirstthing.DataContext;
+using dbthirstthing.Filters;
 using dbthirstthing.Models;
 using NLog;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace dbthirstthing.Controllers
         private readonly ApplicationDbContext db = new ApplicationDbContext();
         private readonly int pageSize = 10; // количество объектов на страницу
 
+        //[JwtAuthorizationFilter]
         public async Task<ActionResult> Index(int page = 1)
         {
             var query = db.News.OrderByDescending(n => n.newsdate);

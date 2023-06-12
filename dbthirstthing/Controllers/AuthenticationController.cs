@@ -1,7 +1,9 @@
 ﻿using dbthirstthing.DataContext;
+using dbthirstthing.JWT;
 using dbthirstthing.Models;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using Google.Authenticator;
 using hbehr.recaptcha;
 using hbehr.recaptcha.Exceptions;
@@ -10,12 +12,15 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 
@@ -96,6 +101,12 @@ namespace dbthirstthing.Controllers
                 string uname = (string)Session["Name"];
                 var user = db.Users.SingleOrDefault(u => u.login == uname);
                 FormsAuthentication.SetAuthCookie(user.login, true);
+
+                var payload = new { user.userid };
+                var JWtoken = JwtManager.CreateToken(payload, TimeSpan.FromMinutes(30));
+                var JWTcookie = new HttpCookie("token", JWtoken);
+                HttpContext.Response.Cookies.Add(JWTcookie);
+                
 
                 if (user.neverlogged != true)
                     return RedirectToAction("Index", "Home");

@@ -76,8 +76,8 @@
     <Reference Include="hbehr.recaptcha, Version=1.9.0.36338, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ReCaptcha-AspNet.1.9.0\lib\net461\hbehr.recaptcha.dll</HintPath>
     </Reference>
-    <Reference Include="JWT, Version=10.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.10.0.2\lib\net40\JWT.dll</HintPath>
+    <Reference Include="jose-jwt, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jose-jwt.4.1.0\lib\net461\jose-jwt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -264,11 +264,13 @@
     <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="DTO\UserDTO.cs" />
+    <Compile Include="Filters\JwtAuthorizationFilter.cs" />
     <Compile Include="Helpers\PagingHelpers.cs" />
     <Compile Include="Interfaces\INews.cs" />
     <Compile Include="Interfaces\IUserModel.cs" />
     <Compile Include="Jobs\LoadMonitor.cs" />
     <Compile Include="Jobs\MonitorScheduler.cs" />
+    <Compile Include="JWT\JwtManager.cs" />
     <Compile Include="Models\GoogleAccessToken.cs" />
     <Compile Include="Models\GoogleUserOutputData.cs" />
     <Compile Include="Controllers\HomeController.cs" />

@@ -1,11 +1,13 @@
 ﻿using dbthirstthing.Jobs;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using hbehr.recaptcha;
+
 using NLog;
 using Quartz;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -41,6 +43,7 @@ namespace dbthirstthing
 
             //AutoMapper config
             AutoMapperConfig.RegisterMappings();
+
         }
     }
 }

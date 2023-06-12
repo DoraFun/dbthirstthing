@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using dbthirstthing.DataContext;
 using dbthirstthing.DTO;
+
 using dbthirstthing.Models;
 using Microsoft.AspNet.Identity;
 using NLog;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -21,6 +23,7 @@ namespace dbthirstthing.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Admin
 
+
         [Authorize(Roles = "Admin")]
         public ActionResult Waitlist()
         {
@@ -32,6 +35,9 @@ namespace dbthirstthing.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult AllUsers()
         {
+
+
+
             var users = db.Users.Include("RoleModel").ToList();
             var userDTOs = Mapper.Map<List<UserModel>, List<UserDTO>>(users);
             return View(userDTOs);
