@@ -1,4 +1,7 @@
-﻿using dbthirstthing.Jobs;
+﻿using dbthirstthing.Interfaces;
+using dbthirstthing.Jobs;
+using dbthirstthing.Models;
+using dbthirstthing.Services;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using hbehr.recaptcha;
 
@@ -12,7 +15,9 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-
+using System.Web.UI.WebControls;
+using Unity;
+using Unity.AspNet.Mvc;
 
 namespace dbthirstthing
 {
@@ -44,6 +49,10 @@ namespace dbthirstthing
             //AutoMapper config
             AutoMapperConfig.RegisterMappings();
 
+            var container = new UnityContainer();
+            container.RegisterType<INewsService, NewsService>();
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            
         }
     }
 }

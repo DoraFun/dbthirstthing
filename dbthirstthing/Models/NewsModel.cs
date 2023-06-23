@@ -20,5 +20,7 @@ namespace dbthirstthing.Models
 
         public string content { get; set; }
         public DateTime newsdate { get; set; }
+
+        public NewsModel() { }
     }
 }
