@@ -15,6 +15,7 @@ namespace dbthirstthing.Interfaces
         void AddPreregistration(PreregistrationModel preregistrationModel);
 
         void DeletePreregistration(int? id);
+        void AcceptPreregistration(int? id);
 
         bool IsEmailValid(string email);
         bool IsLoginValid(string login);

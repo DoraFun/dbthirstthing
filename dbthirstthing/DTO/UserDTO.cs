@@ -8,6 +8,7 @@ namespace dbthirstthing.DTO
 {
     public class UserDTO
     {
+
         public string displayname { get; set; }
         public string login { get; set; }
         public string email { get; set; }

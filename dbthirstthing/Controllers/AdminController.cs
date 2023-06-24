@@ -72,29 +72,30 @@ namespace dbthirstthing.Controllers
             return RedirectToAction("Index");
         }
 
+        //[Authorize(Roles = "Admin")]
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int? id)
+        //{
+        //    _preregistrationService.DeletePreregistration((int)id);
+        //    return RedirectToAction("Waitlist");
+
+
+        //}
+
+
         [Authorize(Roles = "Admin")]
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int? id)
+        public ActionResult AcceptPreregistration(int? id)
         {
-            _preregistrationService.DeletePreregistration((int)id);
-            return RedirectToAction("Waitlist");
-
-
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(UserModel userModel)
-        {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                _userService.CreateUser(userModel);
-                return RedirectToAction("Waitlist");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            _preregistrationService.AcceptPreregistration(id);
+                return RedirectToAction("Waitlist");
+            
 
-            return RedirectToAction("Index");
+
         }
 
 

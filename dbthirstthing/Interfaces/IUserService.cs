@@ -11,7 +11,6 @@ namespace dbthirstthing.Interfaces
     public interface IUserService
     {
         List<RoleModel> GetAllRoles();
-        void CreateUser(int userId);
 
         List<UserDTO> GetUsers();
     }
