@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using dbthirstthing.DataContext;
 using dbthirstthing.DTO;
-
+using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
 using Microsoft.AspNet.Identity;
 using NLog;
@@ -19,29 +19,32 @@ namespace dbthirstthing.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly IPreregistrationService _preregistrationService;
+        private readonly IUserService _userService;
+
+        public AdminController(IPreregistrationService preregistrationService, IUserService userService)
+        {
+            _preregistrationService = preregistrationService;
+            _userService = userService;
+        }
+
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
-        private ApplicationDbContext db = new ApplicationDbContext();
+
         // GET: Admin
-
-
         [Authorize(Roles = "Admin")]
         public ActionResult Waitlist()
         {
-            List<RoleModel> roles = db.Roles.ToList();
+            var roles = _userService.GetAllRoles();
             ViewBag.Roles = roles;
-            return View(db.Preregistration.ToList());
+            var preregistrations = _preregistrationService.GetPreregistrationList();
+            return View(preregistrations);
         }
 
         [Authorize(Roles = "Admin")]
         public ActionResult AllUsers()
         {
-
-
-
-            var users = db.Users.Include("RoleModel").ToList();
-            var userDTOs = Mapper.Map<List<UserModel>, List<UserDTO>>(users);
+            var userDTOs = _userService.GetUsers();
             return View(userDTOs);
-
         }
 
         [Authorize(Roles = "Admin")]
@@ -57,14 +60,16 @@ namespace dbthirstthing.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-            
-            if (preregistrationModel == null)
+
+            var preregistration = _preregistrationService.GetPreregistration(id);
+            if (preregistration == null)
             {
                 return HttpNotFound();
             }
-            
-            return View(preregistrationModel);
+
+            _preregistrationService.DeletePreregistration(id);
+
+            return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "Admin")]
@@ -72,101 +77,25 @@ namespace dbthirstthing.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int? id)
         {
+            _preregistrationService.DeletePreregistration((int)id);
+            return RedirectToAction("Waitlist");
 
-            try
-            {
-                PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-                db.Preregistration.Remove(preregistrationModel);
-                db.SaveChanges();
-                logger.Info($"User with id {id} was denied. ");
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"{ex} while tried to delete user with id {id} ");
-                return View(ex);
-            }
 
         }
 
+        [HttpPost]
         [Authorize(Roles = "Admin")]
-        [HttpPost, ActionName("Confirm")]
         [ValidateAntiForgeryToken]
-        public ActionResult Confirm(int? id, [Bind(Include = "userid,displayname,login,email, roleid")] UserModel userModel)
+        public ActionResult Create(UserModel userModel)
         {
-          
-                try
-                {
-                    db.Users.Add(userModel);
-                   
-                PreregistrationModel preregistrationModel = db.Preregistration.Find(id);
-                    db.Preregistration.Remove(preregistrationModel);
-                    db.SaveChanges();
-                    logger.Info($" user with id {id} was accepted ");
-                return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                logger.Error($"{ex} while tried to accept user with id {id} ");
-                return View(ex);
-                }
-
-            
-
-            
-        }
-
-        [Authorize(Roles = "Admin")]
-        public ActionResult Confirm(int? id)
-        {
-
-            var randompassword = Crypto.GenerateSalt(8);
-            using (db)
+            if (ModelState.IsValid)
             {
-                var usersToMove = db.Preregistration.Where(u => u.userid == id).ToList();
-
-                foreach (var user in usersToMove)
-                {
-                    var newUser = new UserModel
-                    {
-                        //userid = user.userid,
-                        displayname = user.displayname,
-                        login = user.login,
-                        email = user.email,
-                        pass = HashPassword(randompassword), /*интернет мужики говорят что норм тема*/
-                        neverlogged = true,
-
-                        
-
-
-                };
-
-                    string filePath = Server.MapPath($"~/messages/{newUser.login}_confirmation.txt");
-
-                    using (StreamWriter writer = new StreamWriter(filePath))
-                    {
-                        writer.WriteLine($"Ваш одноразовый пароль для первого входа: {randompassword} обязательно смените его после авторизации");
-                    }
-                    logger.Info($" user with id {id} was accepted ");
-                    db.Users.Add(newUser);
-                    db.Preregistration.Remove(user);
-                }
-                
-                db.SaveChanges();
-
-                return RedirectToAction("Index");
-
+                _userService.CreateUser(userModel);
+                return RedirectToAction("Waitlist");
             }
 
+            return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = "Admin")]
-        public static string HashPassword(string password)
-        {
-            var hasher = new PasswordHasher();
-            return hasher.HashPassword(password);
-        }
-
 
 
     }

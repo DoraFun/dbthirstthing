@@ -1,5 +1,5 @@
 ﻿using dbthirstthing.DataContext;
-using dbthirstthing.JWT;
+
 using dbthirstthing.Models;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
@@ -103,9 +103,9 @@ namespace dbthirstthing.Controllers
                 FormsAuthentication.SetAuthCookie(user.login, true);
 
                 var payload = new { user.userid };
-                var JWtoken = JwtManager.CreateToken(payload, TimeSpan.FromMinutes(30));
-                var JWTcookie = new HttpCookie("token", JWtoken);
-                HttpContext.Response.Cookies.Add(JWTcookie);
+                //var JWtoken = JwtManager.CreateToken(payload, TimeSpan.FromMinutes(30));
+                //var JWTcookie = new HttpCookie("token", JWtoken);
+                //HttpContext.Response.Cookies.Add(JWTcookie);
                 
 
                 if (user.neverlogged != true)

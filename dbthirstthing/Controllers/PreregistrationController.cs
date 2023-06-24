@@ -10,7 +10,9 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
 using dbthirstthing.DataContext;
+using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
+using dbthirstthing.Services;
 using hbehr.recaptcha;
 using Microsoft.Ajax.Utilities;
 using NLog;
@@ -21,15 +23,20 @@ namespace dbthirstthing.Controllers
     {
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly IPreregistrationService _preregistrationService;
+
+        public PreregistrationController(IPreregistrationService preregistrationService)
+        {
+            _preregistrationService = preregistrationService;
+        }
 
         // GET: PreregistrationModels1
         public ActionResult Index()
         {
             logger.Info("preregistrations list accessed. ");
-            return View(db.Preregistration.ToList());
+            var preregistrations = _preregistrationService.GetPreregistrationList();
+            return View(preregistrations);
         }
-
 
         // GET: PreregistrationModels1/Create
         public ActionResult Create()
@@ -39,7 +46,7 @@ namespace dbthirstthing.Controllers
         }
 
         // POST: PreregistrationModels1/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -48,10 +55,10 @@ namespace dbthirstthing.Controllers
             if (ModelState.IsValid)
             {
                 string userResponse = HttpContext.Request.Params["g-recaptcha-response"];
-                if (!string.IsNullOrEmpty(userResponse) && ReCaptcha.ValidateCaptcha(userResponse)) /*каптча*/
+
+                if (!string.IsNullOrEmpty(userResponse) && ReCaptcha.ValidateCaptcha(userResponse)) //каптча
                 {
-                    db.Preregistration.Add(preregistrationModel);
-                    db.SaveChanges();
+                    _preregistrationService.AddPreregistration(preregistrationModel);
                     logger.Info("New preregistration added. ");
                     return View("./PreRegistrationConfirmed");
                 }
@@ -60,73 +67,32 @@ namespace dbthirstthing.Controllers
                     logger.Info("Someone failed captcha. ");
                     ModelState.AddModelError("", "Подтвердите, что вы не робот для продолжения");
                     // Bot Attack, non validated !
-
-
                 }
             }
-
             return View(preregistrationModel);
         }
 
-
-
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
             base.Dispose(disposing);
         }
 
         public ActionResult IsEmailValid(string email)
         {
-            bool isExistPreregistration = false;
-            bool isExistUser = false;
-
-            using (var db = new ApplicationDbContext())
-            {
-                isExistPreregistration = db.Preregistration.Any(u => u.email == email);
-                isExistUser = db.Users.Any(u => u.email == email);
-
-
-            }
-
-            if (!isExistUser && !isExistPreregistration)
-            {
-                return Json(true, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
+            bool isValid = _preregistrationService.IsEmailValid(email);
+            return Json(isValid, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost, ActionName("IsLoginValid")]
         public ActionResult IsLoginValid(string login)
         {
-            bool isExistPreregistration = false;
-            bool isExistUser = false;
-
-            using (var db = new ApplicationDbContext())
-            {
-                //мб сделать их ассинхронными ? Надо почитать про это
-                isExistPreregistration = db.Preregistration.Any(u => u.login == login);
-                isExistUser = db.Users.Any(u => u.login == login);
-
-            }
-
-            if (!isExistUser && !isExistPreregistration)
-            {
-                return Json(true, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(false, JsonRequestBehavior.AllowGet);
-            }
-
+            bool isValid = _preregistrationService.IsLoginValid(login);
+            return Json(isValid, JsonRequestBehavior.AllowGet);
         }
+
+
     }
 
-    
+
+
+
 }

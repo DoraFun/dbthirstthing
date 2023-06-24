@@ -17,12 +17,7 @@ namespace dbthirstthing.Controllers
 
     public class NewsController : Controller
     {
-        //public NewsController() 
-        //{
-        //    IKernel ninjectKernel = new StandardKernel();
-        //    ninjectKernel.Bind<INewsService>().To<NewsService>();
-        //    newsService = ninjectKernel.Get<INewsService>();
-        //}
+
 
         private readonly INewsService newsService;
         private readonly int pageSize = 10; // количество объектов на страницу
