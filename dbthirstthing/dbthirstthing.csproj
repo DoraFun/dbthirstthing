@@ -294,6 +294,7 @@
     <Compile Include="Helpers\PagingHelpers.cs" />
     <Compile Include="Interfaces\IAuthenticationService.cs" />
     <Compile Include="Interfaces\INewsService.cs" />
+    <Compile Include="Interfaces\IPasswordService.cs" />
     <Compile Include="Interfaces\IPreregistrationService.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Jobs\LoadMonitor.cs" />
@@ -322,6 +323,7 @@
     <Compile Include="Providers\CustomRoleProvider.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\NewsService.cs" />
+    <Compile Include="Services\PasswordService.cs" />
     <Compile Include="Services\PreregistrationService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>

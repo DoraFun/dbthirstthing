@@ -1,5 +1,7 @@
 ﻿using dbthirstthing.DataContext;
+using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
+using dbthirstthing.Services;
 using hbehr.recaptcha;
 using NLog;
 using System;
@@ -16,6 +18,12 @@ namespace dbthirstthing.Controllers
     {
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
         // GET: Password
+        private readonly IPasswordService _passwordService;
+
+        public PasswordController(IPasswordService passwordService)
+        {
+            _passwordService = passwordService;
+        }
         public ActionResult ChangePassword()
         {
             return View();
@@ -31,34 +39,9 @@ namespace dbthirstthing.Controllers
                 if (!string.IsNullOrEmpty(userResponse) && ReCaptcha.ValidateCaptcha(userResponse)) /*каптча*/
                 {
                     // поиск пользователя в бд
-                    UserModel user = null;
-                    using (ApplicationDbContext db = new ApplicationDbContext())
-                    {
-                        user = db.Users.FirstOrDefault(u => u.email == model.Email);
-                        //ААААААААААААААААААААААААААААААА
-
-                        if (user != null && Crypto.VerifyHashedPassword(user.pass, model.OldPassword) == true) /*пиздец костыль*/
-                        {
-
-                            if (user.neverlogged == true)
-                            {
-                                user.neverlogged = false;
-
-                            }
-
-                            user.pass = Crypto.HashPassword(model.NewPassword);
-                            db.SaveChanges();
-                            logger.Info("User changed password. ");
-                            return RedirectToAction("Index", "Home");
-                            //тут определенно надо бы отправлять еще код подтверждения
-
-                        }
-                        else
-                        {
-                            logger.Info("Someone tried to change user password and failed. ");
-                            ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
-                        }
-                    }
+                    if (_passwordService.ChangePassword(model) == true)
+                        return RedirectToAction("../Home/Index");
+                    ModelState.AddModelError("", "Такого пользователя нет");
                 }
                 else
                 {

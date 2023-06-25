@@ -54,6 +54,7 @@ namespace dbthirstthing
             container.RegisterType<IPreregistrationService, PreregistrationService>();
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<IAuthenticationService, AuthenticationService>();
+            container.RegisterType<IPasswordService, PasswordService>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
             
