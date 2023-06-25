@@ -1,11 +1,13 @@
 ﻿using dbthirstthing.DataContext;
-
+using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2016.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Google.Authenticator;
 using hbehr.recaptcha;
+
 using hbehr.recaptcha.Exceptions;
 using Microsoft.Ajax.Utilities;
 using NLog;
@@ -28,7 +30,15 @@ namespace dbthirstthing.Controllers
 {
     public class AuthenticationController : Controller
     {
+
+        private readonly IAuthenticationService _authenticationService;
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+
+        public AuthenticationController(IAuthenticationService authenticationService)
+        {
+            _authenticationService = authenticationService;
+        }
+
         public ActionResult Login()
         {
             Session["Name"] = null;
@@ -47,9 +57,6 @@ namespace dbthirstthing.Controllers
             if (Session["Name"] != null && Session["IsValidTwoFactorAuthentication"] != null && (bool)Session["IsValidTwoFactorAuthentication"])
                 return RedirectToAction("Index");
 
-            string googleAuthKey = WebConfigurationManager.AppSettings["GoogleAuthKey"];
-            string userUniqueKey = (model.Name + googleAuthKey);
-
             string userResponse = HttpContext.Request.Params["g-recaptcha-response"];
             if (string.IsNullOrEmpty(userResponse) || !ReCaptcha.ValidateCaptcha(userResponse))
             {
@@ -57,74 +64,54 @@ namespace dbthirstthing.Controllers
                 return View(model);
             }
 
-            using (var db = new ApplicationDbContext())
+            if (!_authenticationService.ValidateCredentials(model.Name, model.Password))
             {
-                var user = db.Users.SingleOrDefault(u => u.login == model.Name);
-
-                if (user == null || !Crypto.VerifyHashedPassword(user.pass, model.Password))
-                {
-                    ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
-                    return View(model);
-                }
-
-                Session["Name"] = model.Name;
-
-                var twoFacAuth = new TwoFactorAuthenticator();
-                var setupInfo = twoFacAuth.GenerateSetupCode("UdayDodiyaAuthDemo.com", model.Name, ConvertSecretToBytes(userUniqueKey, false), 300);
-                Session["UserUniqueKey"] = userUniqueKey;
-                ViewBag.BarcodeImageUrl = setupInfo.QrCodeSetupImageUrl;
-                ViewBag.SetupCode = setupInfo.ManualEntryKey;
+                ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
+                return View(model);
             }
+            else
+            {
+                
+            }
+            Session["Name"] = model.Name;
 
+
+            var twoFacAuthKey = _authenticationService.GenerateTwoFactorAuthKey(model.Name);
+            Session["UserUniqueKey"] = twoFacAuthKey;
+
+            //var payload = new { userid = userId };
+            //var token = JwtManager.CreateToken(payload, TimeSpan.FromMinutes(30));
+            FormsAuthentication.SetAuthCookie(model.Name, true);
+
+            ViewBag.BarcodeImageUrl = twoFacAuthKey.QrCodeUrl;
+            ViewBag.SetupCode = twoFacAuthKey.ManualEntryKey;
             ViewBag.Status = true;
+
             return View(model);
         }
 
         public ActionResult TwoFactorAuthenticate(LoginModel model)
         {
             var token = Request["CodeDigit"];
-            var twoFacAuth = new TwoFactorAuthenticator();
-            var userUniqueKey = Session["UserUniqueKey"].ToString();
-            bool isValid = twoFacAuth.ValidateTwoFactorPIN(userUniqueKey, token, false);
+            var username = Session["Name"].ToString();
 
-            if (!isValid)
+            if (!_authenticationService.ValidateTwoFactorAuthCode(username, token))
             {
-                ViewBag.Message = "Google Two Factor PIN is expired or wrong";
-                return RedirectToAction("Login");
+                ModelState.AddModelError("", "The token you entered is invalid. Please try again.");
+                Session["IsValidTwoFactorAuthentication"] = false;
+
+                return View("Login", model);
             }
-
-            var userCode = Convert.ToBase64String(MachineKey.Protect(Encoding.UTF8.GetBytes(userUniqueKey)));
-
             Session["IsValidTwoFactorAuthentication"] = true;
-            using (var db = new ApplicationDbContext())
-            {
-                string uname = (string)Session["Name"];
-                var user = db.Users.SingleOrDefault(u => u.login == uname);
-                FormsAuthentication.SetAuthCookie(user.login, true);
 
-                var payload = new { user.userid };
-                //var JWtoken = JwtManager.CreateToken(payload, TimeSpan.FromMinutes(30));
-                //var JWTcookie = new HttpCookie("token", JWtoken);
-                //HttpContext.Response.Cookies.Add(JWTcookie);
-                
-
-                if (user.neverlogged != true)
-                    return RedirectToAction("Index", "Home");
-
-                logger.Info("User auth. ");
-                return RedirectToAction("ChangePassword", "Password"); // Add explanation page for why the password should be changed
-            }
+            return RedirectToAction("Index", "Home");
         }
-
-        private byte[] ConvertSecretToBytes(string secret, bool secretIsBase32) =>
-            secretIsBase32 ? Base32Encoding.ToBytes(secret) : Encoding.UTF8.GetBytes(secret);
 
         public ActionResult Logoff()
         {
             Session["Name"] = null;
             Session["IsValidTwoFactorAuthentication"] = null;
             FormsAuthentication.SignOut();
-            logger.Info("User left. ");
             return RedirectToAction("Index", "Home");
         }
     }

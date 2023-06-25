@@ -53,6 +53,7 @@ namespace dbthirstthing
             container.RegisterType<INewsService, NewsService>();
             container.RegisterType<IPreregistrationService, PreregistrationService>();
             container.RegisterType<IUserService, UserService>();
+            container.RegisterType<IAuthenticationService, AuthenticationService>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
             
