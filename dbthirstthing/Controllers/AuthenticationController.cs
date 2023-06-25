@@ -69,10 +69,7 @@ namespace dbthirstthing.Controllers
                 ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
                 return View(model);
             }
-            else
-            {
-                
-            }
+
             Session["Name"] = model.Name;
 
 
@@ -86,6 +83,10 @@ namespace dbthirstthing.Controllers
             ViewBag.BarcodeImageUrl = twoFacAuthKey.QrCodeUrl;
             ViewBag.SetupCode = twoFacAuthKey.ManualEntryKey;
             ViewBag.Status = true;
+
+
+
+
 
             return View(model);
         }
@@ -104,7 +105,15 @@ namespace dbthirstthing.Controllers
             }
             Session["IsValidTwoFactorAuthentication"] = true;
 
-            return RedirectToAction("Index", "Home");
+            if (_authenticationService.FirstAuth(username))
+            { return View("../Password/ChangePassword"); }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+                
+
+            
         }
 
         public ActionResult Logoff()

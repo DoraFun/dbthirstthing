@@ -2,6 +2,7 @@
 using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
 using Google.Authenticator;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,26 @@ namespace dbthirstthing.Services
                 return Crypto.VerifyHashedPassword(user.pass, passwordHash);
             }
         }
+
+        public bool FirstAuth(string username)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.SingleOrDefault(u => u.login == username);
+
+                if (user.neverlogged == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+        }
+
+
 
         public class TwoFactorAuthResult
         {

@@ -15,5 +15,7 @@ namespace dbthirstthing.Interfaces
         bool ValidateCredentials(string username, string passwordHash);
         TwoFactorAuthResult GenerateTwoFactorAuthKey(string username);
         bool ValidateTwoFactorAuthCode(string username, string code);
+
+        bool FirstAuth(string username);
     }
 }
