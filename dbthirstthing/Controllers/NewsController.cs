@@ -1,4 +1,5 @@
-﻿using dbthirstthing.DataContext;
+﻿using dbthirstthing.Attributes;
+using dbthirstthing.DataContext;
 using dbthirstthing.Filters;
 using dbthirstthing.Interfaces;
 using dbthirstthing.Models;
@@ -28,6 +29,7 @@ namespace dbthirstthing.Controllers
         }
 
         //[JwtAuthorizationFilter]
+        [Jwt]
         public async Task<ActionResult> Index(int page = 1)
         {
             var query = await newsService.GetAllNews();

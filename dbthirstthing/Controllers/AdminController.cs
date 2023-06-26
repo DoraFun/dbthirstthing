@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using dbthirstthing.Attributes;
 using dbthirstthing.DataContext;
 using dbthirstthing.DTO;
 using dbthirstthing.Interfaces;
@@ -41,6 +42,7 @@ namespace dbthirstthing.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [Jwt]
         public ActionResult AllUsers()
         {
             var userDTOs = _userService.GetUsers();

@@ -9,12 +9,15 @@ using Google.Authenticator;
 using hbehr.recaptcha;
 
 using hbehr.recaptcha.Exceptions;
+using Jose;
 using Microsoft.Ajax.Utilities;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Web;
@@ -34,9 +37,11 @@ namespace dbthirstthing.Controllers
         private readonly IAuthenticationService _authenticationService;
         private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
 
+        private readonly HttpClient httpClient;
         public AuthenticationController(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
+            this.httpClient = new HttpClient();
         }
 
         public ActionResult Login()
@@ -88,6 +93,8 @@ namespace dbthirstthing.Controllers
 
 
 
+
+
             return View(model);
         }
 
@@ -104,6 +111,21 @@ namespace dbthirstthing.Controllers
                 return View("Login", model);
             }
             Session["IsValidTwoFactorAuthentication"] = true;
+
+            string secretKey = "MySecretKey";
+            var tokenPayload = new Dictionary<string, object>()
+            {
+                {"userLogin", username},
+
+            };
+            string JwtToken = Jose.JWT.Encode(tokenPayload, Encoding.UTF8.GetBytes(secretKey), JwsAlgorithm.HS256);
+
+            HttpCookie cookie = new HttpCookie("jwt");
+            cookie.Value = JwtToken;
+            cookie.Expires = DateTime.Now.AddMinutes(30);
+            Response.Cookies.Add(cookie);
+            //this.httpClient.DefaultRequestHeaders.Authorization =
+            //   new AuthenticationHeaderValue("Bearer", JwtToken);
 
             if (_authenticationService.FirstAuth(username))
             { return View("../Password/ChangePassword"); }

@@ -23,7 +23,7 @@ namespace dbthirstthing.Services
             {
                 user = db.Users.FirstOrDefault(u => u.email == model.Email);
                 //ААААААААААААААААААААААААААААААА
-
+                var randomPassword = Crypto.GenerateSalt(8);
                 if (user != null && Crypto.VerifyHashedPassword(user.pass, model.OldPassword) == true) /*пиздец костыль*/
                 {
 
